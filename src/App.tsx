@@ -1,157 +1,111 @@
-import { useRef, useState } from 'react'
-import { Pause, Play } from 'lucide-react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import { Button } from '@/components/ui/button'
-import './App.css'
+import { useMemo, useState } from 'react'
+import { Music2 } from 'lucide-react'
+import { SearchBar } from './components/SearchBar'
+import { SongList } from './components/SongList'
+import { PlayerBar } from './components/PlayerBar'
+import { songs } from './data/songs'
+import type { LoopMode, Song } from './types'
 
 function App() {
+  const [query, setQuery] = useState('')
+  const [playlist, setPlaylist] = useState<Song[]>(songs)
+  const [currentSong, setCurrentSong] = useState<Song | undefined>(songs[0])
   const [isPlaying, setIsPlaying] = useState(false)
-  const [playbackError, setPlaybackError] = useState('')
-  const audioRef = useRef<HTMLAudioElement>(null)
+  const [loopMode, setLoopMode] = useState<LoopMode>('off')
+  const [isShuffled, setIsShuffled] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+  // Mock duration until real audio metadata is wired up.
+  const duration = 182
 
-  async function togglePlayback() {
-    const audio = audioRef.current
-    if (!audio) return
+  const visibleSongs = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    if (!q) return playlist
+    return playlist.filter(
+      (song) =>
+        song.name.toLowerCase().includes(q) ||
+        song.tags.some((tag) => tag.toLowerCase().includes(q)),
+    )
+  }, [playlist, query])
 
-    setPlaybackError('')
-    if (isPlaying) {
-      audio.pause()
+  function selectSong(song: Song) {
+    if (song.songId === currentSong?.songId) {
+      setIsPlaying((playing) => !playing)
       return
     }
+    setCurrentSong(song)
+    setCurrentTime(0)
+    setIsPlaying(true)
+  }
 
-    try {
-      await audio.play()
-    } catch {
-      setPlaybackError('Unable to play this track. Please try again.')
-    }
+  function stepSong(direction: 1 | -1) {
+    if (playlist.length === 0) return
+    const index = playlist.findIndex((s) => s.songId === currentSong?.songId)
+    const next =
+      playlist[
+        (index + direction + playlist.length) % playlist.length
+      ]
+    setCurrentSong(next)
+    setCurrentTime(0)
+  }
+
+  function shufflePlaylist() {
+    setPlaylist((current) => {
+      const shuffled = [...current]
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+      }
+      return shuffled
+    })
+  }
+
+  function handleToggleShuffle() {
+    setIsShuffled((value) => {
+      const next = !value
+      if (next) shufflePlaylist()
+      else setPlaylist(songs)
+      return next
+    })
+  }
+
+  function handleCycleLoop() {
+    setLoopMode((mode) => (mode === 'off' ? 'all' : mode === 'all' ? 'one' : 'off'))
   }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="flex min-h-svh flex-col bg-background text-foreground">
+      <header className="border-b border-border">
+        <div className="mx-auto flex w-full max-w-3xl items-center gap-2 px-4 py-4">
+          <Music2 className="size-5 text-primary" aria-hidden="true" />
+          <h1 className="text-base font-semibold tracking-tight">Tony Music</h1>
         </div>
-        <div>
-          <h1>当你孤单时你会想起谁</h1>
-          <p>Listen to this track</p>
-        </div>
-        <Button
-          type="button"
-          onClick={togglePlayback}
-          aria-label={isPlaying ? 'Pause track' : 'Play track'}
-        >
-          {isPlaying ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
-          {isPlaying ? 'Pause' : 'Play'}
-        </Button>
-        <audio
-          ref={audioRef}
-          preload="none"
-          src="https://github.com/qweasd1/tony-music/raw/refs/heads/master/data/songs/%E5%BD%93%E4%BD%A0%E5%AD%A4%E5%8D%95%E6%97%B6%E4%BD%A0%E4%BC%9A%E6%83%B3%E8%B5%B7%E8%B0%81.mp3"
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
-          onEnded={() => setIsPlaying(false)}
-          onError={() =>
-            setPlaybackError('Unable to load this track. Please try again.')
-          }
+      </header>
+
+      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-4">
+        <SearchBar value={query} onChange={setQuery} />
+        <SongList
+          songs={visibleSongs}
+          currentSongId={currentSong?.songId}
+          isPlaying={isPlaying}
+          onSelect={selectSong}
         />
-        {playbackError && (
-          <p className="playback-error" role="alert">
-            {playbackError}
-          </p>
-        )}
-      </section>
+      </main>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <PlayerBar
+        currentSong={currentSong}
+        isPlaying={isPlaying}
+        loopMode={loopMode}
+        isShuffled={isShuffled}
+        currentTime={currentTime}
+        duration={duration}
+        onTogglePlay={() => setIsPlaying((playing) => !playing)}
+        onPrevious={() => stepSong(-1)}
+        onNext={() => stepSong(1)}
+        onCycleLoop={handleCycleLoop}
+        onToggleShuffle={handleToggleShuffle}
+        onSeek={setCurrentTime}
+      />
+    </div>
   )
 }
 
