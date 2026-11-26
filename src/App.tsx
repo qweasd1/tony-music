@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import logo from './assets/logo.png'
 import { SearchBar } from './components/SearchBar'
 import { SongList } from './components/SongList'
