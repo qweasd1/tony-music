@@ -92,7 +92,7 @@ function App() {
         <button
           type="button"
           onClick={() => {
-            setSplashFading(true)
+            // setSplashFading(true)
             // setTimeout(() => setSplashMounted(false), 500)
             setSplashMounted(false)
           }}
