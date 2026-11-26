@@ -22,7 +22,7 @@ export default defineConfig({
         name: '王八音盒',
         short_name: '王八音盒',
         description: 'A fast, installable music web app.',
-        theme_color: '#863bff',
+        theme_color: '#ffffff',
         background_color: '#08060d',
         display: 'standalone',
         orientation: 'portrait-primary',
