@@ -75,27 +75,12 @@ function App() {
     setLoopMode((mode) => (mode === 'off' ? 'all' : mode === 'all' ? 'one' : 'off'))
   }
 
-  // iOS tints the status bar from theme-color; match the splash purple while
-  // it is visible, then restore the normal app colors once it is gone.
-  useEffect(() => {
-    if (!splashMounted) return
-    const metas = Array.from(
-      document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]'),
-    )
-    const originals = metas.map((m) => m.content)
-    const splashPurple = '#571080'
-    for (const m of metas) m.content = splashPurple
-    return () => {
-      metas.forEach((m, i) => {
-        m.content = originals[i]
-      })
-    }
-  }, [splashMounted])
 
   if (splashMounted) {
+    const splashBackgroundColor = "from-[#5a0f84] via-[#571080] to-[#521a74]"
     return (
       <div
-        className={`fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 overflow-hidden bg-gradient-to-b from-[#5a0f84] via-[#571080] to-[#521a74] transition-opacity duration-500 ease-out ${
+        className={`fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 overflow-hidden bg-gradient-to-b ${splashBackgroundColor} transition-opacity duration-500 ease-out ${
           splashFading ? 'pointer-events-none opacity-0' : 'opacity-100'
         }`}
       >
