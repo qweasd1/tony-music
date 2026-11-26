@@ -1,24 +1,44 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import logo from './assets/logo.png'
 import { SearchBar } from './components/SearchBar'
 import { SongList } from './components/SongList'
 import { PlayerBar } from './components/PlayerBar'
 import { SplashMonogram } from './components/SplashMonogram'
-import { songs } from './data/songs'
+import { fetchPlaylist } from './lib/api'
 import type { LoopMode, Song } from './types'
 
 function App() {
-  // const [splashFading, setSplashFading] = useState(false)
   const [splashMounted, setSplashMounted] = useState(true)
   const [query, setQuery] = useState('')
-  const [playlist, setPlaylist] = useState<Song[]>(songs)
-  const [currentSong, setCurrentSong] = useState<Song | undefined>(songs[0])
+  const [playlist, setPlaylist] = useState<Song[]>([])
+  const [currentSong, setCurrentSong] = useState<Song | undefined>(undefined)
   const [isPlaying, setIsPlaying] = useState(false)
   const [loopMode, setLoopMode] = useState<LoopMode>('off')
   const [isShuffled, setIsShuffled] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const fetchedSongsRef = useRef<Song[]>([])
   // Mock duration until real audio metadata is wired up.
   const duration = 182
+
+  // Load the playlist from the remote meta.json when the app starts.
+  useEffect(() => {
+    let cancelled = false
+    fetchPlaylist()
+      .then((songs) => {
+        if (cancelled) return
+        fetchedSongsRef.current = songs
+        setPlaylist(songs)
+        setCurrentSong((song) => song ?? songs[0])
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return
+        setLoadError(error instanceof Error ? error.message : 'Failed to load playlist')
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const visibleSongs = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -66,7 +86,7 @@ function App() {
     setIsShuffled((value) => {
       const next = !value
       if (next) shufflePlaylist()
-      else setPlaylist(songs)
+      else setPlaylist(fetchedSongsRef.current)
       return next
     })
   }
@@ -75,10 +95,10 @@ function App() {
     setLoopMode((mode) => (mode === 'off' ? 'all' : mode === 'all' ? 'one' : 'off'))
   }
 
+  const splashBackgroundColor = splashMounted ? "bg-[#5a0f84]" : ""
 
   if (splashMounted) {
-    // const splashBackgroundColor = splashMounted ? "from-[#5a0f84] via-[#571080] to-[#521a74]" : ""
-    const splashBackgroundColor = splashMounted ? "bg-[#5a0f84]" : ""
+    
     return (
       <div
         className={`fixed inset-0 flex flex-col items-center justify-center gap-8  ${splashBackgroundColor}`}
@@ -92,8 +112,6 @@ function App() {
         <button
           type="button"
           onClick={() => {
-            // setSplashFading(true)
-            // setTimeout(() => setSplashMounted(false), 500)
             setSplashMounted(false)
           }}
           className="relative z-10 rounded-full bg-white/15 px-8 py-3 text-base font-semibold text-white backdrop-blur transition-colors hover:bg-white/25 active:bg-white/30"
@@ -105,15 +123,25 @@ function App() {
   }
 
   return (
-    <div className="flex min-h-svh flex-col bg-background text-foreground">
+    <div className={`flex min-h-svh flex-col  ${splashBackgroundColor} text-foreground`}>
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-4">
         <SearchBar value={query} onChange={setQuery} />
-        <SongList
-          songs={visibleSongs}
-          currentSongId={currentSong?.songId}
-          isPlaying={isPlaying}
-          onSelect={selectSong}
-        />
+        {loadError ? (
+          <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            Could not load playlist: {loadError}
+          </div>
+        ) : playlist.length === 0 ? (
+          <div className="py-12 text-center text-sm text-muted-foreground">
+            Loading playlist…
+          </div>
+        ) : (
+          <SongList
+            songs={visibleSongs}
+            currentSongId={currentSong?.songId}
+            isPlaying={isPlaying}
+            onSelect={selectSong}
+          />
+        )}
       </main>
 
       <PlayerBar
