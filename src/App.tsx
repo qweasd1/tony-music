@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { Pause, Play } from 'lucide-react'
 import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
@@ -6,7 +7,26 @@ import { Button } from '@/components/ui/button'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [playbackError, setPlaybackError] = useState('')
+  const audioRef = useRef<HTMLAudioElement>(null)
+
+  async function togglePlayback() {
+    const audio = audioRef.current
+    if (!audio) return
+
+    setPlaybackError('')
+    if (isPlaying) {
+      audio.pause()
+      return
+    }
+
+    try {
+      await audio.play()
+    } catch {
+      setPlaybackError('Unable to play this track. Please try again.')
+    }
+  }
 
   return (
     <>
@@ -17,18 +37,33 @@ function App() {
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
         <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
+          <h1>当你孤单时你会想起谁</h1>
+          <p>Listen to this track</p>
         </div>
         <Button
           type="button"
-          variant="outline"
-          onClick={() => setCount((count) => count + 1)}
+          onClick={togglePlayback}
+          aria-label={isPlaying ? 'Pause track' : 'Play track'}
         >
-          Count is {count}
+          {isPlaying ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
+          {isPlaying ? 'Pause' : 'Play'}
         </Button>
+        <audio
+          ref={audioRef}
+          preload="none"
+          src="https://github.com/qweasd1/tony-music/raw/refs/heads/master/data/songs/%E5%BD%93%E4%BD%A0%E5%AD%A4%E5%8D%95%E6%97%B6%E4%BD%A0%E4%BC%9A%E6%83%B3%E8%B5%B7%E8%B0%81.mp3"
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onEnded={() => setIsPlaying(false)}
+          onError={() =>
+            setPlaybackError('Unable to load this track. Please try again.')
+          }
+        />
+        {playbackError && (
+          <p className="playback-error" role="alert">
+            {playbackError}
+          </p>
+        )}
       </section>
 
       <div className="ticks"></div>

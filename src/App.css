@@ -17,6 +17,10 @@
   }
 }
 
+.playback-error {
+  color: var(--accent);
+}
+
 .hero {
   position: relative;
 
