@@ -78,7 +78,7 @@ function App() {
   if (splashMounted) {
     return (
       <div
-        className={`fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 overflow-hidden bg-gradient-to-b from-[#5a0f84] via-[#571080] to-[#521a74] transition-opacity duration-500 ease-out ${
+        className={`fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 overflow-hidden bg-gradient-to-b from-[#0f5a2e] via-[#10804a] to-[#1a7440] transition-opacity duration-500 ease-out ${
           splashFading ? 'pointer-events-none opacity-0' : 'opacity-100'
         }`}
       >
