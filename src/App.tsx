@@ -77,7 +77,8 @@ function App() {
 
 
   if (splashMounted) {
-    const splashBackgroundColor = "from-[#5a0f84] via-[#571080] to-[#521a74]"
+    // const splashBackgroundColor = "from-[#5a0f84] via-[#571080] to-[#521a74]"
+    const splashBackgroundColor = " "
     return (
       <div
         className={`fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 overflow-hidden bg-gradient-to-b ${splashBackgroundColor} transition-opacity duration-500 ease-out ${
