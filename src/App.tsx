@@ -3,6 +3,7 @@ import logo from './assets/logo.png'
 import { SearchBar } from './components/SearchBar'
 import { SongList } from './components/SongList'
 import { PlayerBar } from './components/PlayerBar'
+import { SplashMonogram } from './components/SplashMonogram'
 import { songs } from './data/songs'
 import type { LoopMode, Song } from './types'
 
@@ -77,14 +78,15 @@ function App() {
   if (splashMounted) {
     return (
       <div
-        className={`fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 bg-gradient-to-b from-[#5a0f84] via-[#571080] to-[#521a74] transition-opacity duration-500 ease-out ${
+        className={`fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 overflow-hidden bg-gradient-to-b from-[#5a0f84] via-[#571080] to-[#521a74] transition-opacity duration-500 ease-out ${
           splashFading ? 'pointer-events-none opacity-0' : 'opacity-100'
         }`}
       >
+        <SplashMonogram />
         <img
           src={logo}
           alt="王八音盒"
-          className="w-2/3 rounded-2xl shadow-2xl"
+          className="relative z-10 w-2/3 rounded-2xl shadow-2xl"
         />
         <button
           type="button"
@@ -92,7 +94,7 @@ function App() {
             setSplashFading(true)
             setTimeout(() => setSplashMounted(false), 500)
           }}
-          className="rounded-full bg-white/15 px-8 py-3 text-base font-semibold text-white backdrop-blur transition-colors hover:bg-white/25 active:bg-white/30"
+          className="relative z-10 rounded-full bg-white/15 px-8 py-3 text-base font-semibold text-white backdrop-blur transition-colors hover:bg-white/25 active:bg-white/30"
         >
           让老王唱起来
         </button>

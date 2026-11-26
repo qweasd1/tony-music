@@ -139,3 +139,50 @@
     touch-action: manipulation;
   }
 }
+
+/* LV-monogram style floating music icons on the splash screen */
+@keyframes splash-drift {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0%);
+  }
+}
+
+.splash-monogram-scroll {
+  animation: splash-drift 9s linear infinite;
+  will-change: transform;
+}
+
+/* Each note sways randomly while drifting down with the pattern */
+@keyframes splash-sway {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(var(--sway-x, 8px), calc(var(--sway-y, 6px) * -1))
+      rotate(calc(var(--sway-r, 6deg) * -1));
+  }
+  50% {
+    transform: translate(calc(var(--sway-x, 8px) * -0.6), var(--sway-y, 6px))
+      rotate(var(--sway-r, 6deg));
+  }
+  75% {
+    transform: translate(calc(var(--sway-x, 8px) * 0.4), calc(var(--sway-y, 6px) * -0.5))
+      rotate(calc(var(--sway-r, 6deg) * 0.5));
+  }
+}
+
+.splash-note {
+  animation: splash-sway 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-monogram-scroll,
+  .splash-note {
+    animation: none;
+  }
+}
