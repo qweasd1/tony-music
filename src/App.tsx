@@ -7,6 +7,8 @@ import { songs } from './data/songs'
 import type { LoopMode, Song } from './types'
 
 function App() {
+  const [splashFading, setSplashFading] = useState(false)
+  const [splashMounted, setSplashMounted] = useState(true)
   const [query, setQuery] = useState('')
   const [playlist, setPlaylist] = useState<Song[]>(songs)
   const [currentSong, setCurrentSong] = useState<Song | undefined>(songs[0])
@@ -72,20 +74,34 @@ function App() {
     setLoopMode((mode) => (mode === 'off' ? 'all' : mode === 'all' ? 'one' : 'off'))
   }
 
+  if (splashMounted) {
+    return (
+      <div
+        className={`fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 bg-gradient-to-b from-[#5a0f84] via-[#571080] to-[#521a74] transition-opacity duration-500 ease-out ${
+          splashFading ? 'pointer-events-none opacity-0' : 'opacity-100'
+        }`}
+      >
+        <img
+          src={logo}
+          alt="王八音盒"
+          className="w-2/3 rounded-2xl shadow-2xl"
+        />
+        <button
+          type="button"
+          onClick={() => {
+            setSplashFading(true)
+            setTimeout(() => setSplashMounted(false), 500)
+          }}
+          className="rounded-full bg-white/15 px-8 py-3 text-base font-semibold text-white backdrop-blur transition-colors hover:bg-white/25 active:bg-white/30"
+        >
+          让老王唱起来
+        </button>
+      </div>
+    )
+  }
+
   return (
     <div className="flex min-h-svh flex-col bg-background text-foreground">
-      <header className="border-b border-border">
-        <div className="mx-auto flex w-full max-w-3xl items-center gap-2 px-4 py-4">
-          <img
-            src={logo}
-            alt=""
-            aria-hidden="true"
-            className="size-7 rounded-lg object-cover"
-          />
-          <h1 className="text-base font-semibold tracking-tight">王八音盒</h1>
-        </div>
-      </header>
-
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-4">
         <SearchBar value={query} onChange={setQuery} />
         <SongList
