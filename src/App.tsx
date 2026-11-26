@@ -8,7 +8,7 @@ import { songs } from './data/songs'
 import type { LoopMode, Song } from './types'
 
 function App() {
-  const [splashFading, setSplashFading] = useState(false)
+  // const [splashFading, setSplashFading] = useState(false)
   const [splashMounted, setSplashMounted] = useState(true)
   const [query, setQuery] = useState('')
   const [playlist, setPlaylist] = useState<Song[]>(songs)
