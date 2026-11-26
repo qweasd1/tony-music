@@ -77,12 +77,11 @@ function App() {
 
 
   if (splashMounted) {
-    const splashBackgroundColor = splashMounted ? "from-[#5a0f84] via-[#571080] to-[#521a74]" : ""
+    // const splashBackgroundColor = splashMounted ? "from-[#5a0f84] via-[#571080] to-[#521a74]" : ""
+    const splashBackgroundColor = splashMounted ? "bg-[#5a0f84]" : ""
     return (
       <div
-        className={`fixed inset-0 flex flex-col items-center justify-center gap-8 overflow-hidden bg-gradient-to-b ${splashBackgroundColor} transition-opacity duration-500 ease-out ${
-          splashFading ? 'pointer-events-none opacity-0' : 'opacity-100'
-        }`}
+        className={`fixed inset-0 flex flex-col items-center justify-center gap-8  ${splashBackgroundColor}`}
       >
         <SplashMonogram />
         <img
@@ -94,7 +93,8 @@ function App() {
           type="button"
           onClick={() => {
             setSplashFading(true)
-            setTimeout(() => setSplashMounted(false), 500)
+            // setTimeout(() => setSplashMounted(false), 500)
+            setSplashMounted(false)
           }}
           className="relative z-10 rounded-full bg-white/15 px-8 py-3 text-base font-semibold text-white backdrop-blur transition-colors hover:bg-white/25 active:bg-white/30"
         >
