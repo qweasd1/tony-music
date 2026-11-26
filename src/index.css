@@ -12,6 +12,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Disable pinch/double-tap zoom on mobile (Safari ignores user-scalable=no) */
+  touch-action: manipulation;
 
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -134,5 +136,6 @@
   }
   html {
     @apply font-sans;
+    touch-action: manipulation;
   }
 }

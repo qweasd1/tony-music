@@ -33,8 +33,8 @@ export function PlayerBar({
   onSeek,
 }: PlayerBarProps) {
   return (
-    <div className="border-t border-border bg-background/80 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-3 px-4 py-3">
+    <div className="border-t border-border bg-background/80 pb-[calc(env(safe-area-inset-bottom)+3.5rem)] backdrop-blur">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-3 px-4 pt-3 pb-1">
         <div className="flex items-center gap-3">
           <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-muted">
             <Music2 className="size-5 text-muted-foreground" aria-hidden="true" />
