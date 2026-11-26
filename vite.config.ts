@@ -19,8 +19,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Tony Music',
-        short_name: 'Tony Music',
+        name: '王八音盒',
+        short_name: '王八音盒',
         description: 'A fast, installable music web app.',
         theme_color: '#863bff',
         background_color: '#08060d',

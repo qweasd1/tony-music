@@ -77,7 +77,7 @@ function App() {
       <header className="border-b border-border">
         <div className="mx-auto flex w-full max-w-3xl items-center gap-2 px-4 py-4">
           <Music2 className="size-5 text-primary" aria-hidden="true" />
-          <h1 className="text-base font-semibold tracking-tight">Tony Music</h1>
+          <h1 className="text-base font-semibold tracking-tight">王八音盒</h1>
         </div>
       </header>
 
