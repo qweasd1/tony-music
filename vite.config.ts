@@ -50,6 +50,23 @@ export default defineConfig({
       workbox: {
         navigateFallback: '/tony-music/index.html',
         cleanupOutdatedCaches: true,
+        runtimeCaching: [
+          {
+            // Song MP3s never change, so cache each one on first play and
+            // serve it from the CacheFirst 'songs-v1' cache forever after.
+            // 'rangeRequests' lets the <audio> element still seek/scrub
+            // (Workbox strips the Range header on the one network fetch so
+            // the full file gets cached, then answers later range requests
+            // from the cached copy).
+            urlPattern: /raw.githubusercontent\.com\/qweasd1\/tony-music\/.*\/data\/songs\/[^/]+\.mp3$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'songs-v1',
+              cacheableResponse: { statuses: [0, 200] },
+              rangeRequests: true,
+            },
+          },
+        ],
       },
     }),
   ],
