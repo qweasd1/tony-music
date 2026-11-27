@@ -16,6 +16,7 @@ interface PlayerBarProps {
   onCycleLoop: () => void
   onToggleShuffle: () => void
   onSeek?: (time: number) => void
+  onSeekBy: (deltaSeconds: number) => void
 }
 
 export function PlayerBar({
@@ -31,6 +32,7 @@ export function PlayerBar({
   onCycleLoop,
   onToggleShuffle,
   onSeek,
+  onSeekBy,
 }: PlayerBarProps) {
   return (
     <div className="border-t border-border bg-background/80 pb-[env(safe-area-inset-bottom)] backdrop-blur">
@@ -64,6 +66,7 @@ export function PlayerBar({
           onNext={onNext}
           onCycleLoop={onCycleLoop}
           onToggleShuffle={onToggleShuffle}
+          onSeekBy={onSeekBy}
         />
       </div>
     </div>

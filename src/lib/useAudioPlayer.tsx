@@ -21,6 +21,7 @@ export interface AudioPlayer {
   /** Actual playback state reported by the audio element. */
   isPlaying: boolean
   seek: (time: number) => void
+  seekBy: (deltaSeconds: number) => void
 }
 
 /**
@@ -64,6 +65,13 @@ export function useAudioPlayer(
     setCurrentTime(time)
   }, [])
 
+  const seekBy = useCallback((deltaSeconds: number) => {
+    const audio = audioRef.current
+    if (!audio) return
+    const max = Number.isFinite(audio.duration) ? audio.duration : Number.POSITIVE_INFINITY
+    seek(Math.min(Math.max(0, audio.currentTime + deltaSeconds), max))
+  }, [seek])
+
   const audioProps = {
     ref: audioRef,
     src: song?.src,
@@ -88,5 +96,5 @@ export function useAudioPlayer(
     },
   }
 
-  return { audioProps, audioRef, currentTime, duration, isPlaying: playing, seek }
+  return { audioProps, audioRef, currentTime, duration, isPlaying: playing, seek, seekBy }
 }

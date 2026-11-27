@@ -162,6 +162,7 @@ function App() {
             onCycleLoop={handleCycleLoop}
             onToggleShuffle={handleToggleShuffle}
             onSeek={player.seek}
+            onSeekBy={player.seekBy}
           />
         </div>
       )}

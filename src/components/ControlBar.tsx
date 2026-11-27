@@ -1,4 +1,14 @@
-import { Pause, Play, Repeat, Repeat1, Shuffle, SkipBack, SkipForward } from 'lucide-react'
+import {
+  Pause,
+  Play,
+  Repeat,
+  Repeat1,
+  RotateCcw,
+  RotateCw,
+  Shuffle,
+  SkipBack,
+  SkipForward,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import type { LoopMode } from '../types'
@@ -12,6 +22,7 @@ interface ControlBarProps {
   onNext: () => void
   onCycleLoop: () => void
   onToggleShuffle: () => void
+  onSeekBy: (deltaSeconds: number) => void
 }
 
 export function ControlBar({
@@ -23,6 +34,7 @@ export function ControlBar({
   onNext,
   onCycleLoop,
   onToggleShuffle,
+  onSeekBy,
 }: ControlBarProps) {
   const LoopIcon = loopMode === 'one' ? Repeat1 : Repeat
 
@@ -49,6 +61,17 @@ export function ControlBar({
       </Button>
 
       <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => onSeekBy(-5)}
+        aria-label="Back 5 seconds"
+        className="relative"
+      >
+        <RotateCcw aria-hidden="true" />
+        <span className="absolute text-[9px] font-semibold">5</span>
+      </Button>
+
+      <Button
         variant="default"
         size="icon-lg"
         onClick={onTogglePlay}
@@ -60,6 +83,17 @@ export function ControlBar({
         ) : (
           <Play aria-hidden="true" className="size-5 fill-current" />
         )}
+      </Button>
+
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => onSeekBy(5)}
+        aria-label="Forward 5 seconds"
+        className="relative"
+      >
+        <RotateCw aria-hidden="true" />
+        <span className="absolute text-[9px] font-semibold">5</span>
       </Button>
 
       <Button
