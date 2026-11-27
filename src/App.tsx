@@ -146,25 +146,27 @@ function App() {
           </button>
         </div>
       ) : (
-        <div className={`flex min-h-svh flex-col  ${splashBackgroundColor} text-foreground`}>
-          <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-4">
+        <div className={`flex h-svh flex-col overflow-hidden ${splashBackgroundColor} text-foreground`}>
+          <main className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-4">
             <SearchBar value={query} onChange={setQuery} />
-            {loadError ? (
-              <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-                Could not load playlist: {loadError}
-              </div>
-            ) : playlist.length === 0 ? (
-              <div className="py-12 text-center text-sm text-muted-foreground">
-                Loading playlist…
-              </div>
-            ) : (
-              <SongList
-                songs={visibleSongs}
-                currentSongId={currentSong?.songId}
-                isPlaying={isPlaying}
-                onSelect={selectSong}
-              />
-            )}
+            <div className="min-h-0 flex-1 overflow-y-auto">
+              {loadError ? (
+                <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                  Could not load playlist: {loadError}
+                </div>
+              ) : playlist.length === 0 ? (
+                <div className="py-12 text-center text-sm text-muted-foreground">
+                  Loading playlist…
+                </div>
+              ) : (
+                <SongList
+                  songs={visibleSongs}
+                  currentSongId={currentSong?.songId}
+                  isPlaying={isPlaying}
+                  onSelect={selectSong}
+                />
+              )}
+            </div>
           </main>
 
           <PlayerBar
