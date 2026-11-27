@@ -144,6 +144,38 @@
   }
 }
 
+/* Fade transitions: splash appears (1s); on enter, splash fades out (500ms)
+   while the main view fades in underneath (crossfade). */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.splash-fade-in {
+  animation: fade-in 1s ease-out both;
+}
+
+.splash-fade-out {
+  animation: fade-out 500ms ease-in both;
+}
+
+.main-fade-in {
+  animation: fade-in 500ms ease-out both;
+}
+
 /* LV-monogram style floating music icons on the splash screen */
 @keyframes splash-drift {
   from {
@@ -186,7 +218,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .splash-monogram-scroll,
-  .splash-note {
+  .splash-note,
+  .splash-fade-in,
+  .splash-fade-out,
+  .main-fade-in {
     animation: none;
   }
 }

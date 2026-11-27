@@ -10,6 +10,7 @@ import type { LoopMode, Song } from './types'
 
 function App() {
   const [splashMounted, setSplashMounted] = useState(true)
+  const [splashLeaving, setSplashLeaving] = useState(false)
   const [query, setQuery] = useState('')
   const [playlist, setPlaylist] = useState<Song[]>([])
   const [currentSong, setCurrentSong] = useState<Song | undefined>(undefined)
@@ -119,34 +120,13 @@ function App() {
     setLoopMode((mode) => (mode === 'off' ? 'all' : mode === 'all' ? 'one' : 'off'))
   }
 
-  const splashBackgroundColor = splashMounted ? "bg-[#5a0f84]" : ""
-
   return (
     <>
       {/* Single always-mounted audio element; src/events handled by useAudioPlayer. */}
       <audio {...player.audioProps} className="hidden" />
-      {splashMounted ? (
-        <div
-          className={`fixed inset-0 flex flex-col items-center justify-center gap-8  ${splashBackgroundColor}`}
-        >
-          <SplashMonogram />
-          <img
-            src={logo}
-            alt="王八音盒"
-            className="relative z-10 w-2/3 rounded-2xl shadow-2xl"
-          />
-          <button
-            type="button"
-            onClick={() => {
-              setSplashMounted(false)
-            }}
-            className="relative z-10 rounded-full bg-white/15 px-8 py-3 text-base font-semibold text-white backdrop-blur transition-colors hover:bg-white/25 active:bg-white/30"
-          >
-            让老王唱起来
-          </button>
-        </div>
-      ) : (
-        <div className={`flex h-svh flex-col overflow-hidden ${splashBackgroundColor} text-foreground`}>
+      {/* Main view mounts while the splash is fading out so the two crossfade. */}
+      {(!splashMounted || splashLeaving) && (
+        <div className={`main-fade-in flex h-svh flex-col overflow-hidden text-foreground`}>
           <main className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-4">
             <SearchBar value={query} onChange={setQuery} />
             <div className="min-h-0 flex-1 overflow-y-auto">
@@ -183,6 +163,30 @@ function App() {
             onToggleShuffle={handleToggleShuffle}
             onSeek={player.seek}
           />
+        </div>
+      )}
+      {splashMounted && (
+        <div
+          className={`fixed inset-0 z-10 flex flex-col items-center justify-center gap-8 bg-[#5a0f84] ${splashLeaving ? 'splash-fade-out' : 'splash-fade-in'}`}
+        >
+          <SplashMonogram />
+          <img
+            src={logo}
+            alt="王八音盒"
+            className="relative z-10 w-2/3 rounded-2xl shadow-2xl"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              // Crossfade: splash fades out on top of the fading-in main view,
+              // then unmounts once the 500ms animation has finished.
+              setSplashLeaving(true)
+              setTimeout(() => setSplashMounted(false), 500)
+            }}
+            className="relative z-10 rounded-full bg-white/15 px-8 py-3 text-base font-semibold text-white backdrop-blur transition-colors hover:bg-white/25 active:bg-white/30"
+          >
+            让老王唱起来
+          </button>
         </div>
       )}
     </>
