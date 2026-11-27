@@ -39,10 +39,10 @@ export function ControlBar({
   const LoopIcon = loopMode === 'one' ? Repeat1 : Repeat
 
   return (
-    <div className="flex items-center justify-center gap-1">
+    <div className="flex items-center justify-center gap-3">
       <Button
         variant="ghost"
-        size="icon"
+        size="icon-lg"
         onClick={onToggleShuffle}
         aria-label="Shuffle playlist"
         aria-pressed={isShuffled}
@@ -53,7 +53,7 @@ export function ControlBar({
 
       <Button
         variant="ghost"
-        size="icon"
+        size="icon-lg"
         onClick={onPrevious}
         aria-label="Previous song"
       >
@@ -62,7 +62,7 @@ export function ControlBar({
 
       <Button
         variant="ghost"
-        size="icon"
+        size="icon-lg"
         onClick={() => onSeekBy(-5)}
         aria-label="Back 5 seconds"
         className="relative"
@@ -87,7 +87,7 @@ export function ControlBar({
 
       <Button
         variant="ghost"
-        size="icon"
+        size="icon-lg"
         onClick={() => onSeekBy(5)}
         aria-label="Forward 5 seconds"
         className="relative"
@@ -98,7 +98,7 @@ export function ControlBar({
 
       <Button
         variant="ghost"
-        size="icon"
+        size="icon-lg"
         onClick={onNext}
         aria-label="Next song"
       >
@@ -107,7 +107,7 @@ export function ControlBar({
 
       <Button
         variant="ghost"
-        size="icon"
+        size="icon-lg"
         onClick={onCycleLoop}
         aria-label={`Loop: ${loopMode === 'off' ? 'off' : loopMode === 'all' ? 'playlist' : 'one song'}`}
         aria-pressed={loopMode !== 'off'}
